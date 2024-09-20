@@ -10,7 +10,7 @@ jobs:
 
   launcher:
     name: Build KSE launcher
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,12 +19,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install nim mingw-w64
       - name: Build
-        run: nim -d:mingw --cpu:i386 -d:release --app:gui --opt:size --out:kse-launcher.exe c kse_launcher.nim
+        run: nim -d:mingw --cpu:amd64 -d:release --app:gui --opt:size --out:kse-launcher.exe c kse_launcher.nim
         working-directory: kse/res
       - name: Shrink executable
         run: strip kse/res/kse-launcher.exe
       - name: Store artifacts for release
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: kse-launcher
           path: kse/res/kse-launcher.exe
@@ -45,7 +45,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: kse-launcher
           path: kse/res
@@ -53,13 +53,13 @@ jobs:
         run: .\gradlew.bat test zip innosetup
         working-directory: kse
       - name: Store artifacts for release
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: windows-artifacts
           path: |
             kse/build/launcher/kse.exe
       - name: Store artifacts for release
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           # use second step with same artifact name in order to avoid sub-folders
           name: windows-artifacts
@@ -69,7 +69,7 @@ jobs:
 
   linux:
     name: Create artifacts on Linux
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Disable automatic EOL conversions
         run: git config --global core.autocrlf false
@@ -84,7 +84,7 @@ jobs:
         run: ./gradlew test buildDeb buildRpm
         working-directory: kse
       - name: Store artifacts for release
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: linux-artifacts
           path: |
@@ -107,7 +107,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: kse-launcher
           path: kse/res
@@ -115,7 +115,7 @@ jobs:
         run: .\gradlew.bat test innosetup
         working-directory: kse
       - name: Store artifacts for release
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: windows-with-jre-artifact
           path: kse/build/distributions/kse-*-setup.exe
@@ -155,7 +155,7 @@ jobs:
           ./gradlew dmg
         working-directory: kse
       - name: Store artifacts for release
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: macos-artifact
           path: kse/build/distributions/kse*.dmg
@@ -164,16 +164,16 @@ jobs:
     needs: [windows, linux, windows-with-jre]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: windows-artifacts
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: linux-artifacts
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: windows-with-jre-artifact
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: macos-artifact
       - name: Create a release

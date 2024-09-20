@@ -20,10 +20,8 @@
 package org.kse.gui.password;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -37,16 +35,15 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 
-import org.kse.crypto.Password;
-import org.kse.gui.JEscDialog;
-import org.kse.gui.PlatformUtil;
+import org.kse.gui.components.JEscDialog;
+import org.kse.gui.passwordmanager.Password;
+import org.kse.utilities.DialogViewer;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Dialog used for entering and confirming a password and checking it against an
@@ -59,14 +56,12 @@ public class DChangePassword extends JEscDialog {
 
     private static final String CANCEL_KEY = "CANCEL_KEY";
 
-    private JPanel jpPassword;
     private JLabel jlOld;
     private JPasswordField jpfOld;
     private JLabel jlFirst;
     private JComponent jpfFirst;
     private JLabel jlConfirm;
     private JPasswordField jpfConfirm;
-    private JPanel jpButtons;
     private JButton jbOK;
     private JButton jbCancel;
 
@@ -138,11 +133,6 @@ public class DChangePassword extends JEscDialog {
         getContentPane().setLayout(new BorderLayout());
 
         jlOld = new JLabel(res.getString("DChangePassword.jlOld.text"));
-        GridBagConstraints gbc_jlOld = new GridBagConstraints();
-        gbc_jlOld.gridx = 0;
-        gbc_jlOld.gridy = 0;
-        gbc_jlOld.anchor = GridBagConstraints.EAST;
-        gbc_jlOld.insets = new Insets(5, 5, 5, 5);
 
         if (oldPassword != null) {
             jpfOld = new JPasswordField("1234567890", 15);
@@ -151,18 +141,7 @@ public class DChangePassword extends JEscDialog {
             jpfOld = new JPasswordField(15);
         }
 
-        GridBagConstraints gbc_jpfOld = new GridBagConstraints();
-        gbc_jpfOld.gridx = 1;
-        gbc_jpfOld.gridy = 0;
-        gbc_jpfOld.anchor = GridBagConstraints.WEST;
-        gbc_jpfOld.insets = new Insets(5, 5, 5, 5);
-
         jlFirst = new JLabel(res.getString("DChangePassword.jlFirst.text"));
-        GridBagConstraints gbc_jlFirst = new GridBagConstraints();
-        gbc_jlFirst.gridx = 0;
-        gbc_jlFirst.gridy = 1;
-        gbc_jlFirst.anchor = GridBagConstraints.EAST;
-        gbc_jlFirst.insets = new Insets(5, 5, 5, 5);
 
         if (passwordQualityConfig.getEnabled()) {
             if (passwordQualityConfig.getEnforced()) {
@@ -174,43 +153,31 @@ public class DChangePassword extends JEscDialog {
             jpfFirst = new JPasswordField(15);
         }
 
-        GridBagConstraints gbc_jpqfFirst = new GridBagConstraints();
-        gbc_jpqfFirst.gridx = 1;
-        gbc_jpqfFirst.gridy = 1;
-        gbc_jpqfFirst.anchor = GridBagConstraints.WEST;
-        gbc_jpqfFirst.insets = new Insets(5, 5, 5, 5);
-
         jlConfirm = new JLabel(res.getString("DChangePassword.jlConfirm.text"));
-        GridBagConstraints gbc_jlConfirm = new GridBagConstraints();
-        gbc_jlConfirm.gridx = 0;
-        gbc_jlConfirm.gridy = 2;
-        gbc_jlConfirm.anchor = GridBagConstraints.EAST;
-        gbc_jlConfirm.insets = new Insets(5, 5, 5, 5);
 
         jpfConfirm = new JPasswordField(15);
-        GridBagConstraints gbc_jpfConfirm = new GridBagConstraints();
-        gbc_jpfConfirm.gridx = 1;
-        gbc_jpfConfirm.gridy = 2;
-        gbc_jpfConfirm.anchor = GridBagConstraints.WEST;
-        gbc_jpfConfirm.insets = new Insets(5, 5, 5, 5);
-
-        jpPassword = new JPanel(new GridBagLayout());
-        jpPassword.add(jlOld, gbc_jlOld);
-        jpPassword.add(jpfOld, gbc_jpfOld);
-        jpPassword.add(jlFirst, gbc_jlFirst);
-        jpPassword.add(jpfFirst, gbc_jpqfFirst);
-        jpPassword.add(jlConfirm, gbc_jlConfirm);
-        jpPassword.add(jpfConfirm, gbc_jpfConfirm);
-        jpPassword.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5),
-                                                new CompoundBorder(new EtchedBorder(), new EmptyBorder(5, 5, 5, 5))));
 
         jbOK = new JButton(res.getString("DChangePassword.jbOK.text"));
-        jbOK.addActionListener(evt -> okPressed());
 
         jbCancel = new JButton(res.getString("DChangePassword.jbCancel.text"));
         jbCancel.addActionListener(evt -> cancelPressed());
         jbCancel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), CANCEL_KEY);
+
+        Container pane = getContentPane();
+        pane.setLayout(new MigLayout("insets dialog, fill", "[]rel[grow]", ""));
+        pane.add(jlOld, "");
+        pane.add(jpfOld, "growx, wrap");
+        pane.add(jlFirst, "");
+        pane.add(jpfFirst, "growx, wrap");
+        pane.add(jlConfirm, "");
+        pane.add(jpfConfirm, "growx, wrap unrel");
+        pane.add(new JSeparator(), "spanx, growx, wrap unrelated");
+        pane.add(jbCancel, "spanx, split 2, tag cancel");
+        pane.add(jbOK, "tag ok");
+
+        jbOK.addActionListener(evt -> okPressed());
+
         jbCancel.getActionMap().put(CANCEL_KEY, new AbstractAction() {
             private static final long serialVersionUID = 1L;
 
@@ -219,11 +186,6 @@ public class DChangePassword extends JEscDialog {
                 cancelPressed();
             }
         });
-
-        jpButtons = PlatformUtil.createDialogButtonPanel(jbOK, jbCancel);
-
-        getContentPane().add(jpPassword, BorderLayout.CENTER);
-        getContentPane().add(jpButtons, BorderLayout.SOUTH);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -302,5 +264,11 @@ public class DChangePassword extends JEscDialog {
     private void closeDialog() {
         setVisible(false);
         dispose();
+    }
+
+    public static void main(String[] args) throws Exception {
+        DialogViewer.run(new DChangePassword(new javax.swing.JFrame(), ModalityType.APPLICATION_MODAL,
+                                             new Password("123456".toCharArray()),
+                                             new PasswordQualityConfig(false, false, 20)));
     }
 }
