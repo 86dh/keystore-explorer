@@ -23,25 +23,17 @@
 # /opt/kse/
 # ├── kse.jar
 # ├── kse.sh
-# ├── kse.desktop
 # ├── splash.png, splash@2x.png # Splash screens
 # ├── lib/
 # │   ├── bcpkix-jdk18on-1.83.jar
 # │   └── ... (other dependencies)
-# ├── icons/
-# │   ├── kse_16.png
-# │   ├── kse_32.png
-# │   ├── kse_48.png
-# │   ├── kse_128.png
-# │   ├── kse_256.png
-# │   └── kse_512.png
 # └── licenses/
 #     ├── kse.txt
 #     ├── bouncycastle.txt
 #     └── ... (other licenses)
 # /usr/bin/kse                             # Symlink to /opt/kse/kse.sh
-# /usr/share/applications/kse.desktop      # Symlink to desktop file in /opt/kse
-# /usr/share/icons/hicolor/*/apps/kse.png  # Icon symlinks (multiple sizes)
+# /usr/share/applications/kse.desktop      # Desktop file
+# /usr/share/icons/hicolor/*/apps/kse.png  # Icons (multiple sizes)
 
 Name:           %KSE_PACKAGE_NAME%
 Version:        %KSE_VERSION%
@@ -50,12 +42,11 @@ Summary:        Multipurpose keystore and certificate tool
 
 License:        GPLv3+
 URL:            %KSE_WEBSITE%
-Source0:        %{name}-%{version}.tar.gz
 
 BuildArch:      noarch
-BuildRequires:  desktop-file-utils
 Requires:       jre >= 17
 Requires:       hicolor-icon-theme
+Requires:       desktop-file-utils
 
 %description
 KeyStore Explorer is a user friendly GUI application for creating,
@@ -74,7 +65,6 @@ rm -rf $RPM_BUILD_ROOT
 # Create installation directories
 install -d $RPM_BUILD_ROOT/opt/%{name}
 install -d $RPM_BUILD_ROOT/opt/%{name}/lib
-install -d $RPM_BUILD_ROOT/opt/%{name}/icons
 install -d $RPM_BUILD_ROOT/opt/%{name}/licenses
 install -d $RPM_BUILD_ROOT/usr/bin
 install -d $RPM_BUILD_ROOT/usr/share/applications
@@ -85,44 +75,36 @@ install -d $RPM_BUILD_ROOT/usr/share/icons/hicolor/128x128/apps
 install -d $RPM_BUILD_ROOT/usr/share/icons/hicolor/256x256/apps
 install -d $RPM_BUILD_ROOT/usr/share/icons/hicolor/512x512/apps
 
-install -m 644 %KSE_BUILD_ROOT%/%KSE_JAR_NAME% $RPM_BUILD_ROOT/opt/%{name}/
-install -m 755 %KSE_BUILD_ROOT%/kse.sh $RPM_BUILD_ROOT/opt/%{name}/
-install -m 644 %KSE_BUILD_ROOT%/kse.desktop $RPM_BUILD_ROOT/opt/%{name}/
-install -m 644 %KSE_BUILD_ROOT%/splash*.png $RPM_BUILD_ROOT/opt/%{name}/
+install %KSE_BUILD_ROOT%/%KSE_JAR_NAME% $RPM_BUILD_ROOT/opt/%{name}/
+install %KSE_BUILD_ROOT%/kse.sh $RPM_BUILD_ROOT/opt/%{name}/
+install %KSE_BUILD_ROOT%/splash*.png $RPM_BUILD_ROOT/opt/%{name}/
+install %KSE_BUILD_ROOT%/kse.desktop $RPM_BUILD_ROOT/usr/share/applications/kse.desktop
 
-install -m 644 %KSE_BUILD_ROOT%/icons/kse_16.png $RPM_BUILD_ROOT/opt/%{name}/icons/
-install -m 644 %KSE_BUILD_ROOT%/icons/kse_32.png $RPM_BUILD_ROOT/opt/%{name}/icons/
-install -m 644 %KSE_BUILD_ROOT%/icons/kse_48.png $RPM_BUILD_ROOT/opt/%{name}/icons/
-install -m 644 %KSE_BUILD_ROOT%/icons/kse_128.png $RPM_BUILD_ROOT/opt/%{name}/icons/
-install -m 644 %KSE_BUILD_ROOT%/icons/kse_256.png $RPM_BUILD_ROOT/opt/%{name}/icons/
-install -m 644 %KSE_BUILD_ROOT%/icons/kse_512.png $RPM_BUILD_ROOT/opt/%{name}/icons/
+install %KSE_BUILD_ROOT%/icons/kse_16.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/16x16/apps/kse.png
+install %KSE_BUILD_ROOT%/icons/kse_32.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/32x32/apps/kse.png
+install %KSE_BUILD_ROOT%/icons/kse_48.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/48x48/apps/kse.png
+install %KSE_BUILD_ROOT%/icons/kse_128.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/128x128/apps/kse.png
+install %KSE_BUILD_ROOT%/icons/kse_256.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/256x256/apps/kse.png
+install %KSE_BUILD_ROOT%/icons/kse_512.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/512x512/apps/kse.png
 
-# Install library dependencies with proper permissions (0644)
+# Install library dependencies
 for jar in %KSE_BUILD_ROOT%/lib/*.jar; do
-    install -m 644 "$jar" $RPM_BUILD_ROOT/opt/%{name}/lib/
+    install "$jar" $RPM_BUILD_ROOT/opt/%{name}/lib/
 done
 
-# Install license files with proper permissions (0644)
+# Install license files
 for license in %KSE_BUILD_ROOT%/licenses/*.txt; do
-    install -m 644 "$license" $RPM_BUILD_ROOT/opt/%{name}/licenses/
+    install "$license" $RPM_BUILD_ROOT/opt/%{name}/licenses/
 done
 
-ln -s /opt/%{name}/kse.sh $RPM_BUILD_ROOT/usr/bin/kse
-ln -s /opt/%{name}/kse.desktop $RPM_BUILD_ROOT/usr/share/applications/kse.desktop
-ln -s /opt/%{name}/icons/kse_16.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/16x16/apps/kse.png
-ln -s /opt/%{name}/icons/kse_32.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/32x32/apps/kse.png
-ln -s /opt/%{name}/icons/kse_48.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/48x48/apps/kse.png
-ln -s /opt/%{name}/icons/kse_128.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/128x128/apps/kse.png
-ln -s /opt/%{name}/icons/kse_256.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/256x256/apps/kse.png
-ln -s /opt/%{name}/icons/kse_512.png $RPM_BUILD_ROOT/usr/share/icons/hicolor/512x512/apps/kse.png
+# Create symlink for the executable
+ln -s ../../opt/%{name}/kse.sh $RPM_BUILD_ROOT/usr/bin/kse
 
 %files
 %attr(0644,root,root) /opt/%{name}/%KSE_JAR_NAME%
 %attr(0755,root,root) /opt/%{name}/kse.sh
-%attr(0644,root,root) /opt/%{name}/kse.desktop
 %attr(0644,root,root) /opt/%{name}/splash*.png
 %attr(0644,root,root) /opt/%{name}/lib/*
-%attr(0644,root,root) /opt/%{name}/icons/*
 %attr(0644,root,root) /opt/%{name}/licenses/*
 /usr/bin/kse
 /usr/share/applications/kse.desktop

@@ -81,11 +81,8 @@ jobs:
         run: git config --global core.autocrlf false
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+      - name: Install required software packages
+        run: sudo apt install -y rpm debhelper dpkg-dev build-essential desktop-file-utils hicolor-icon-theme openjdk-17-jdk
       - name: Build with Gradle
         run: ./gradlew test buildDeb buildRpm
         working-directory: kse
