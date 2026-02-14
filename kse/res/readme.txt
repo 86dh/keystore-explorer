@@ -20,9 +20,6 @@ KSE directory. If it exists, it is used for running KSE.
 This allows to use another JRE for KSE than the default
 system JRE.
 
-All you have to do is copy the jre or jre17
-directory into the KSE directory and rename it to "jre".
-
 
 Windows Command-Line
 --------------------
@@ -36,8 +33,8 @@ Windows Command-Line
 
        java -jar kse.jar
 
-Unix/Linux Command-Line
------------------------
+Linux/macOS Command-Line
+------------------------
 
 1) These instructions assume that the JRE's bin
    directory has been added to your path.
