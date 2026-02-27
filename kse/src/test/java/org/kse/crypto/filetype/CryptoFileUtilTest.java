@@ -25,26 +25,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.Security;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.kse.KSE;
+import org.kse.crypto.CryptoTestsBase;
 
-class CryptoFileUtilTest {
+class CryptoFileUtilTest extends CryptoTestsBase {
 
     private static final String TEST_FILES_PATH = "src/test/resources/testdata/CryptoFileUtilTest";
-
-    static {
-        Security.addProvider(KSE.BC);
-    }
 
     @ParameterizedTest
     // @formatter:off
     @CsvSource({
             // formats for X.509 certificates
             "cert.pem.cer, CERT",
-            "cert.multi.pem.cer, CERT",
+            "cert.multi.pem.cer, PEM_KS",
             "filetype_detection_issue.cer, CERT",
             "cert.der.cer, CERT",
             "cert.pkipath, CERT",
@@ -66,6 +61,7 @@ class CryptoFileUtilTest {
             "keystore.jks, JKS_KS",
             "keystore.p12, PKCS12_KS",
             "keystore.uber, UBER_KS",
+            "keystore.pem, PEM_KS",
 
             // EC private key formats
             "ec.enc.pem.pkcs8, ENC_PKCS8_PVK",

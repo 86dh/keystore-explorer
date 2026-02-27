@@ -28,6 +28,7 @@ import static org.kse.crypto.filetype.CryptoFileType.ENC_PKCS8_PVK;
 import static org.kse.crypto.filetype.CryptoFileType.JAR;
 import static org.kse.crypto.filetype.CryptoFileType.JSON_WEB_TOKEN;
 import static org.kse.crypto.filetype.CryptoFileType.OPENSSL_PUB;
+import static org.kse.crypto.filetype.CryptoFileType.PEM_KS;
 import static org.kse.crypto.filetype.CryptoFileType.UNENC_MS_PVK;
 import static org.kse.crypto.filetype.CryptoFileType.UNENC_OPENSSL_PVK;
 import static org.kse.crypto.filetype.CryptoFileType.UNENC_PKCS8_PVK;
@@ -36,6 +37,7 @@ import static org.kse.crypto.keystore.KeyStoreType.BCFKS;
 import static org.kse.crypto.keystore.KeyStoreType.BKS;
 import static org.kse.crypto.keystore.KeyStoreType.JCEKS;
 import static org.kse.crypto.keystore.KeyStoreType.JKS;
+import static org.kse.crypto.keystore.KeyStoreType.PEM;
 import static org.kse.crypto.keystore.KeyStoreType.PKCS12;
 import static org.kse.crypto.keystore.KeyStoreType.UBER;
 import static org.kse.crypto.privatekey.EncryptionType.ENCRYPTED;
@@ -51,6 +53,9 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -69,9 +74,10 @@ import org.kse.crypto.privatekey.OpenSslPvkUtil;
 import org.kse.crypto.privatekey.Pkcs8Util;
 import org.kse.crypto.publickey.OpenSslPubUtil;
 import org.kse.crypto.x509.X509CertUtil;
+import org.kse.utilities.pem.PemInfo;
+import org.kse.utilities.pem.PemUtil;
 
 import com.nimbusds.jwt.JWTParser;
-import org.kse.utilities.pem.PemUtil;
 
 /**
  * Provides utility methods for the detection of cryptographic file types.
@@ -143,6 +149,16 @@ public class CryptoFileUtil {
             // was not valid b64
         }
 
+        List<PemInfo> pemInfos = null;
+        try {
+            pemInfos = PemUtil.decodeAll(data);
+            if (isPemKeyStore(pemInfos)) {
+                return PEM_KS;
+            }
+        } catch (IOException e) {
+            // was not valid PEM
+        }
+
         if (isJarFile(data)) {
             return JAR;
         }
@@ -208,7 +224,7 @@ public class CryptoFileUtil {
             return csrType.getCryptoFileType();
         }
 
-        KeyStoreType keyStoreType = detectKeyStoreType(data);
+        KeyStoreType keyStoreType = detectKeyStoreType(data, pemInfos);
 
         if (keyStoreType != null) {
             return keyStoreType.getCryptoFileType();
@@ -283,6 +299,10 @@ public class CryptoFileUtil {
      * @throws IOException If an I/O problem occurred
      */
     public static KeyStoreType detectKeyStoreType(byte[] data) throws IOException {
+        return detectKeyStoreType(data, null);
+    }
+
+    private static KeyStoreType detectKeyStoreType(byte[] data, List<PemInfo> pemInfos) throws IOException {
 
         try (DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data))) {
 
@@ -341,6 +361,13 @@ public class CryptoFileUtil {
             }
         }
 
+        if (pemInfos == null) {
+            pemInfos = PemUtil.decodeAll(data);
+        }
+        if (isPemKeyStore(pemInfos)) {
+            return PEM;
+        }
+
         // @formatter:off
         /*
             Test for PKCS #12. ASN.1 should look like this:
@@ -384,5 +411,23 @@ public class CryptoFileUtil {
 
         // KeyStore type not recognised
         return null;
+    }
+
+    private static boolean isPemKeyStore(List<PemInfo> pemInfos) {
+        boolean isPemKeyStore = false;
+        final Map<String, Integer> pemTypes = new HashMap<>();
+
+        pemInfos.stream().forEach(pi -> countPemTypes(pemTypes, pi.getType()));
+
+        // Assume a PEM containing a mix of keys and certificates is a PEM KeyStore
+        isPemKeyStore = pemTypes.size() > 1
+                // Assume a PEM containing multiple certificates is a PEM KeyStore
+                || pemTypes.getOrDefault(X509CertUtil.CERT_PEM_TYPE, 0) > 1;
+
+        return isPemKeyStore;
+    }
+
+    private static void countPemTypes(Map<String, Integer> counts, String type) {
+        counts.compute(type, (k, v) -> v != null ? v + 1 : Integer.valueOf(1));
     }
 }

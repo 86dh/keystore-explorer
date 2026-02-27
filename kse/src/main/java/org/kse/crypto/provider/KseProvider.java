@@ -18,23 +18,31 @@
  * along with KeyStore Explorer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package org.kse.crypto.provider;
 
-package org.kse.crypto;
+import java.security.Provider;
 
-import java.security.Security;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.kse.KSE;
-import org.kse.crypto.provider.KseProvider;
 
 /**
- * Abstract base class for all test cases. Sets up the BC provider.
+ * A KSE specific Java Security Provider. Provides the PEM KeyStore.
  */
-public abstract class CryptoTestsBase {
+public class KseProvider extends Provider {
 
-    @BeforeAll
-    static void addBcProvider() {
-        Security.addProvider(KSE.BC);
-        Security.addProvider(new KseProvider());
+    private static final long serialVersionUID = -8266987543617481929L;
+
+    // Change these to match your provider
+    private static final String PROVIDER_NAME = "KSE";
+    private static final String PROVIDER_VERSION = KSE.getApplicationVersion().toString();
+    private static final String PROVIDER_INFO = "KeyStore Explorer Security Provider v" + PROVIDER_VERSION;
+
+    /**
+     * Construct a new instance of the KSE security provider.
+     */
+    public KseProvider() {
+        super(PROVIDER_NAME, PROVIDER_VERSION, PROVIDER_INFO);
+
+        putService(new Service(this, "KeyStore", "PEM", PemKeyStoreSpi.class.getCanonicalName(), null, null));
     }
+
 }
