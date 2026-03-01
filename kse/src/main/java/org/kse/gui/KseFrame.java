@@ -156,6 +156,7 @@ import org.kse.gui.actions.PasteAction;
 import org.kse.gui.actions.PreferencesAction;
 import org.kse.gui.actions.PropertiesAction;
 import org.kse.gui.actions.RedoAction;
+import org.kse.gui.actions.ReloadAction;
 import org.kse.gui.actions.RemoveFromCertificateChainAction;
 import org.kse.gui.actions.RenameKeyAction;
 import org.kse.gui.actions.RenameKeyPairAction;
@@ -207,6 +208,7 @@ import org.kse.gui.table.ToolTipTable;
 import org.kse.utilities.buffer.Buffer;
 import org.kse.utilities.history.KeyStoreHistory;
 import org.kse.utilities.history.KeyStoreState;
+import org.kse.utilities.io.AutoReloadWatcher;
 import org.kse.utilities.os.OperatingSystem;
 
 /**
@@ -237,6 +239,7 @@ public final class KseFrame implements StatusBar {
     private JMenu jmFile;
     private JMenuItem jmiNew;
     private JMenuItem jmiOpen;
+    private JMenuItem jmiReload;
     private JMenu jmOpenSpecial;
     private JMenuItem jmiOpenDefaultKeyStore;
     private JMenuItem jmiOpenCaCertificatesKeyStore;
@@ -481,6 +484,7 @@ public final class KseFrame implements StatusBar {
     private final OpenAppleKeychainAction openAppleKeychainAction = new OpenAppleKeychainAction(this);
     private final OpenWindowsMyAction openWindowsMyAction = new OpenWindowsMyAction(this);
     private final OpenWindowsRootAction openWindowsRootAction = new OpenWindowsRootAction(this);
+    private final ReloadAction reloadAction = new ReloadAction(this);
     private final SaveAction saveAction = new SaveAction(this);
     private final SaveAsAction saveAsAction = new SaveAsAction(this);
     private final SaveAllAction saveAllAction = new SaveAllAction(this);
@@ -662,6 +666,8 @@ public final class KseFrame implements StatusBar {
         initApplicationIcons();
 
         updateControls(false);
+
+        AutoReloadWatcher.INSTANCE.start(this);
     }
 
     private void initApplicationPosition() {
@@ -720,6 +726,12 @@ public final class KseFrame implements StatusBar {
                 Toolkit.getDefaultToolkit().createImage(getClass().getResource("images/menu/openspecial.png"))));
         PlatformUtil.setMnemonic(jmOpenSpecial, res.getString("KseFrame.jmOpenSpecial.mnemonic").charAt(0));
         jmFile.add(jmOpenSpecial);
+
+        jmiReload = new JMenuItem(reloadAction);
+        PlatformUtil.setMnemonic(jmiReload, res.getString("KseFrame.jmiReload.mnemonic").charAt(0));
+        jmiReload.setToolTipText(null);
+        new StatusBarChangeHandler(jmiReload, (String) reloadAction.getValue(Action.LONG_DESCRIPTION), this);
+        jmFile.add(jmiReload);
 
         jmiOpenDefaultKeyStore = new JMenuItem(openDefaultKeyStoreAction);
         PlatformUtil.setMnemonic(jmiOpenDefaultKeyStore,
@@ -1678,6 +1690,9 @@ public final class KseFrame implements StatusBar {
         jkstpKeyStores.setBorder(new EmptyBorder(3, 3, 3, 3));
 
         jkstpKeyStores.addChangeListener(evt -> {
+            // Check for external modifications
+            handleExternalModification();
+
             // Update controls as selected KeyStore is changed
             updateControls(false);
         });
@@ -2919,6 +2934,32 @@ public final class KseFrame implements StatusBar {
     }
 
     /**
+     * Determines the action to take if the KeyStore is externally modified. This method
+     * is for reloading the currently active tab.
+     *
+     * @param history The KeyStoreHistory of the KeyStore that is externally modified.
+     */
+    public void handleExternalModification(KeyStoreHistory history) {
+        if (preferences.isAutomaticallyReload()) {
+            // Only reload if this is the active tab
+            if (history == getActiveKeyStoreHistory()) {
+                reloadAction.reloadFileBased(history, history.getCurrentState(), true);
+            }
+        }
+    }
+
+    // This method is for reloading the KeyStore when switching to a tab that was
+    // externally modified.
+    private void handleExternalModification() {
+        if (preferences.isAutomaticallyReload()) {
+            KeyStoreHistory history = getActiveKeyStoreHistory();
+            if (history != null && history.isExternallyModified()) {
+                reloadAction.reloadFileBased(history, history.getCurrentState(), true);
+            }
+        }
+    }
+
+    /**
      * Get the selected entry as a drag entry for DnD.
      *
      * @return Drag entry or null if entry could not be dragged
@@ -3145,6 +3186,9 @@ public final class KseFrame implements StatusBar {
         KseKeyStore keyStore = currentState.getKeyStore();
         KeyStoreType type = KeyStoreType.resolveJce(keyStore.getType());
 
+        // Can reload
+        reloadAction.setEnabled(!type.isFileBased() || currentState.getHistory().getFile() != null);
+
         // Can Save As
         if (type.isFileBased()) {
             saveAsAction.setEnabled(true);
@@ -3294,6 +3338,9 @@ public final class KseFrame implements StatusBar {
     }
 
     private void updateControlsNoKeyStoresOpen() {
+        // Nothing to reload
+        reloadAction.setEnabled(false);
+
         // Nothing to close
         closeAction.setEnabled(false);
         closeOthersAction.setEnabled(false);
