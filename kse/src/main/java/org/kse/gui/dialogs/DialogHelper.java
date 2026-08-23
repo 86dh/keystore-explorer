@@ -19,8 +19,7 @@
  */
 package org.kse.gui.dialogs;
 
-import java.security.PrivateKey;
-import java.security.interfaces.ECPrivateKey;
+import java.security.PublicKey;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,12 +55,13 @@ public class DialogHelper {
      * Populate a JComboBox with signature algorithms depending on the key pair type.
      *
      * @param keyPairType The key pair type of the signing private key.
-     * @param privateKey  The signing private key.
+     * @param publicKey   The signing public key.
      * @param jcbSignatureAlgorithm The JComboBox to be populated with the signature algorithms.
      */
-    public static void populateSigAlgs(KeyPairType keyPairType, PrivateKey privateKey,
+    public static void populateSigAlgs(KeyPairType keyPairType, PublicKey publicKey,
                                        JComboBox<SignatureType> jcbSignatureAlgorithm) {
 
+        KeyInfo keyInfo;
         List<SignatureType> sigAlgs;
         String prefsKey = keyPairType.name();
 
@@ -75,7 +75,7 @@ public class DialogHelper {
             // fall-through
         case EC:
             // SM2 is an EC curve, but it is used with a different set of signature algorithms
-            String curve = EccUtil.getNamedCurve(privateKey);
+            String curve = EccUtil.getNamedCurve(publicKey);
             if (CurveSet.SM2.getAllCurveNames().contains(curve)) {
                 sigAlgs = SignatureType.sm2SignatureTypes();
                 prefsKey += SM2_SUFFIX;
@@ -93,11 +93,15 @@ public class DialogHelper {
             sigAlgs = Collections.singletonList(SignatureType.GOST3411_GOST3410);
             break;
         case ECGOST3410_2012:
-            ECPrivateKey privk = (ECPrivateKey) privateKey;
-            if (privk.getParams().getOrder().bitLength() > 256) {
-                sigAlgs = Collections.singletonList(SignatureType.GOST3411_2012_512_GOST3410_2012);
-            } else {
-                sigAlgs = Collections.singletonList(SignatureType.GOST3411_2012_256_GOST3410_2012);
+            try {
+                keyInfo = KeyPairUtil.getKeyInfo(publicKey);
+                if (keyInfo.getSize() > 256) {
+                    sigAlgs = Collections.singletonList(SignatureType.GOST3411_2012_512_GOST3410_2012);
+                } else {
+                    sigAlgs = Collections.singletonList(SignatureType.GOST3411_2012_256_GOST3410_2012);
+                }
+            } catch (CryptoException e) {
+                sigAlgs = Collections.emptyList();
             }
             break;
         case MLDSA44:
@@ -113,7 +117,7 @@ public class DialogHelper {
         case MLKEM768:
         case MLKEM1024:
             // ML-KEM is for key exchange not signing
-            sigAlgs = Collections.EMPTY_LIST;
+            sigAlgs = Collections.emptyList();
             break;
         case SLHDSA_SHA2_128S:
         case SLHDSA_SHA2_128F:
@@ -132,7 +136,7 @@ public class DialogHelper {
         case RSA:
         default:
             try {
-                KeyInfo keyInfo = KeyPairUtil.getKeyInfo(privateKey);
+                keyInfo = KeyPairUtil.getKeyInfo(publicKey);
                 sigAlgs = SignatureType.rsaSignatureTypes(keyInfo.getSize());
             } catch (CryptoException e) {
                 sigAlgs = Collections.emptyList();
@@ -171,10 +175,10 @@ public class DialogHelper {
      * Remembers the user's chosen signature algorithm for the key pair type.
      *
      * @param keyPairType The key pair type.
-     * @param privateKey  The signing private key.
+     * @param publicKey   The signing private key.
      * @param signatureAlgorithm The signature algorithm to be remembered.
      */
-    public static void rememberSigAlg(KeyPairType keyPairType, PrivateKey privateKey, SignatureType signatureAlgorithm) {
+    public static void rememberSigAlg(KeyPairType keyPairType, PublicKey publicKey, SignatureType signatureAlgorithm) {
         String prefsKey = keyPairType.name();
 
         switch (keyPairType) {
@@ -184,7 +188,7 @@ public class DialogHelper {
             // fall-through
         case EC:
             // SM2 is an EC curve, but it is used with a different set of signature algorithms
-            String curve = EccUtil.getNamedCurve(privateKey);
+            String curve = EccUtil.getNamedCurve(publicKey);
             if (CurveSet.SM2.getAllCurveNames().contains(curve)) {
                 prefsKey += SM2_SUFFIX;
             }
