@@ -217,6 +217,12 @@ body {
   }
 }
 
+.external-link-icon {
+  margin-left: 0.25rem;
+  vertical-align: -0.05em;
+  opacity: 0.75;
+}
+
 /* keyboard element */
 /* scoped to [data-bs-theme="light"] (not bare `kbd`) so this reliably
    outranks Bootstrap's own same-specificity kbd rule, which inverts to a

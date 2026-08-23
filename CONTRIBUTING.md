@@ -163,6 +163,16 @@ Those who contributed code, documentation or translations are listed by name bel
 | idvolkov | 5.6.1 | Show certificate fingerprint in overview table and other improvements. |
 | beth-soptim | 5.6.1 | Support Brainpool curves in P12/JKS/JCEKS keystores and use of string SecureRandom. |
 | tenpertur | 5.6.1 | Allow leading or trailing spaces in PEM data. |
+| jonwltn | 5.7.0 | PKCS#12 compatibility improvements, new KeyStore types (PEM, Windows-ROOT, macOS Keychain), JWK import/export as JWE, Ed448 JWS support, KeyStore reload feature, additional secret key algorithms, RFC 7093 key identifiers, improved Brainpool curve support, dialog layout migration to MigLayout, and many other improvements and bugfixes. |
+| Jairo Graterón | 5.7.0 | Redesigned Key Algorithm Selection Dialog with tabs for standard, elliptic curve and PQC algorithms; added global keyboard shortcuts for tab navigation and closing; removed UTF-8 BOM from PEM certificates. |
+| Mike Lothian | 5.7.0 | Added support for IBM CMS Key Database (.kdb) and Stash (.sth) files. |
+| The-Lum | 5.7.0 | Changed the accelerator key of "Examine Clipboard"; improved the context menu for multi-selections. |
+| Pierre Baudry | 5.7.0 | Ensured PKCS#10 CSR PEM lines are 64 characters or less. |
+| beth-soptim | 5.7.0 | Fixed certificate view not showing the correct hierarchy for certificates using Brainpool curves. |
+| Kushida | 5.7.0 | Fixed automatic update checks across month boundaries. |
+| DongHyeon | 5.7.0 | Migrated the "About" dialog to MigLayout. |
+| FreeBono | 5.7.0 | Migrated the "Environment Variables" dialog to MigLayout. |
+| Patrick Baumgartner | 5.7.0 | Build improvements. |
 
 ### Documentation
 | Contributor | Date | Contribution |
@@ -192,9 +202,10 @@ Those who contributed code, documentation or translations are listed by name bel
 
 | Language | Contributor |
 | --- | --- |
-| French | Davy Defaud, The-Lum |
+| French | Davy Defaud, The-Lum, Shire Heart |
 | German | Frank Dietrich |
 | Spanish | Jairo Graterón |
 | Russian | Sergey Ponomarev |
 | Chinese | liyansong2018 |
 | Finnish | Ricky Tigg |
+| Estonian | Priit Jõerüüt |

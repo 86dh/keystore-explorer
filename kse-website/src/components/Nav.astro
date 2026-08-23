@@ -52,7 +52,12 @@ const isActive = (key: string) => (active === key ? 'active' : '');
                 <li class="nav-item"> <a class={`nav-link ${isActive('releases')}`} href="/releases.html">Release Notes</a> </li>
                 <li class="nav-item"> <a class={`nav-link ${isActive('downloads')}`} href="/downloads.html">Downloads</a> </li>
                 <li class="nav-item"> <a class={`nav-link ${isActive('history')}`} href="/history.html">History</a> </li>
-                <li class="nav-item"> <a class="nav-link" href="https://github.com/kaikramer/keystore-explorer">GitHub</a> </li>
+                <li class="nav-item"> <a class="nav-link" href="https://github.com/kaikramer/keystore-explorer">GitHub
+                    <svg class="external-link-icon" width="12" height="12" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                    </svg>
+                </a> </li>
             </ul>
             <div class="nav-search">
                 <form class="d-flex" role="search" id="nav-search-form" autocomplete="off">
