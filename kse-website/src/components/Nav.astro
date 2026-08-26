@@ -3,10 +3,10 @@
 // dropdown links point at (mirrors the old per-version doc _includes/header.html
 // files); `active` highlights the current top-level nav item.
 interface Props {
-  version?: '5.4' | '5.5' | '5.6';
+  version?: '5.4' | '5.5' | '5.6' | '5.7';
   active?: 'news' | 'features' | 'doc' | 'specifications' | 'screenshots' | 'releases' | 'downloads' | 'history' | 'license';
 }
-const { version = '5.6', active } = Astro.props;
+const { version = '5.7', active } = Astro.props;
 const isActive = (key: string) => (active === key ? 'active' : '');
 ---
 <nav id="myNavbar" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 sticky-top">
@@ -33,7 +33,7 @@ const isActive = (key: string) => (active === key ? 'active' : '');
                         <a class="dropdown-item" href={`/doc/${version}/digitalSigning.html`}>Digital Signing</a>
                         <a class="dropdown-item" href={`/doc/${version}/certificateExtensions.html`}>Certificate Extensions</a>
                         <a class="dropdown-item" href={`/doc/${version}/examineFiles.html`}>Examine Files and Connections</a>
-                        {version === '5.6' && (
+                        {(version === '5.6' || version === '5.7') && (
                             <a class="dropdown-item" href={`/doc/${version}/passwordManager.html`}>Password Manager</a>
                         )}
                         <a class="dropdown-item" href={`/doc/${version}/preferences.html`}>Preferences</a>
