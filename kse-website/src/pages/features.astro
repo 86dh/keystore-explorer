@@ -31,12 +31,19 @@ import Layout from '../layouts/Default.astro';
                 <li>BKS (V1 and V2)</li>
                 <li>UBER</li>
                 <li>BCFKS</li>
+                <li>PEM</li>
+                <li>KDB (IBM CMS)</li>
             </ul>
-            <li>Conversion between these types.</li>
+            <li>Conversion between these KeyStore types.</li>
+            <li>Access the Windows Certificate Store and Apple Keychain as KeyStores.</li>
             <li>Change KeyStore passwords.</li>
+            <li>Store and manage KeyStore passwords with the built-in password manager.</li>
+            <li>Store arbitrary passwords/passphrases as secret key entries.</li>
             <li>Delete or rename KeyStore entries.</li>
             <li>Cut/copy/paste KeyStore entries.</li>
             <li>Search for KeyStore entries.</li>
+            <li>Export the KeyStore entry table as CSV.</li>
+            <li>Reload KeyStores when they change on disk.</li>
             <li>Configure a CA Certs KeyStore for use with KeyStore operations.</li>
         </ul>
     </div>
@@ -44,19 +51,21 @@ import Layout from '../layouts/Default.astro';
         <h2 class="h3">Key Pair Features</h2>
 
         <ul class="level1">
-            <li>Generate RSA, DSA and EC (incl. Ed25519/Ed448) key pairs with self-signed X.509 certificates.</li>
+            <li>Generate RSA, DSA and EC (incl. Ed25519/Ed448, SM2 and ECGOST) key pairs with self-signed X.509 certificates.</li>
+            <li>Generate post-quantum ML-DSA, ML-KEM and SLH-DSA key pairs.</li>
             <li>Apply X.509 certificate extensions to generated key pairs and Certificate Signing Requests (CSRs).</li>
             <li>Import key pairs from PKCS #12 files.</li>
             <li>Import key pairs from PKCS #8 private key/certificate combination files.</li>
             <li>Import key pairs from Microsoft PVK private key/certificate combination files.</li>
             <li>Import key pairs from OpenSSL private key/certificate combination files.</li>
+            <li>Import key pairs from JWK (JSON Web Key) files.</li>
             <li>Generate CSRs in PKCS #10 and SPKAC formats.</li>
             <li>Import Certificate Authority (CA) replies.</li>
             <li>Export key pairs as PKCS #12.</li>
             <li>Export private keys as PKCS #8.</li>
             <li>Export private keys as Microsoft PVK.</li>
             <li>Export private keys as OpenSSL.</li>
-            <li>Export public and private keys as JWK.</li>
+            <li>Export public and private keys as JWK, incl. as encrypted JWE.</li>
             <li>Change the password of key pair entries.</li>
             <li>Append certificates to key pair certificate chains.</li>
         </ul>
@@ -84,7 +93,7 @@ import Layout from '../layouts/Default.astro';
             <li>Sign CSRs in PKCS #10 and SPKAC formats.</li>
             <li>Create and sign key pairs with a CA certificate in one step.</li>
             <li>Sign CRLs (Certificate Revocation Lists)</li>
-            <li>Sign Java Archive (JAR) files.</li>
+            <li>Sign and Verify Java Archive (JAR) files.</li>
             <li>Add a timestamp to jar signatures.</li>
             <li>Sign J2ME MIDlet Applications files.</li>
             <li>Sign and Verify JWT (JSON Web Token) files.</li>
