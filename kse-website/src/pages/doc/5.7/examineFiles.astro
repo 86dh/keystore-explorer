@@ -3,10 +3,10 @@ import Layout from '../../../layouts/Doc.astro';
 ---
 <Layout title="KSE Manual - Examine" version="5.7" editPath="src/pages/doc/5.7/examineFiles.astro">
 
-<h1>Examine a File</h1>
+<h1 id="examine-a-file">Examine a File</h1>
 <hr />
 
-To examine a file (certificate, CSR, CRL or keystore):
+To examine a file (certificate, CSR, CRL, keystore or <a href="#view-and-verify-a-jwt">JWT</a>):
 
 <ol>
   <li>
@@ -35,11 +35,11 @@ To examine a file (certificate, CSR, CRL or keystore):
   </li>
 </ol>
 
-<h1>Examine Clipboard Content</h1>
+<h1 id="examine-clipboard-content">Examine Clipboard Content</h1>
 <hr />
 
-To examine the content of the system clipboard (PEM encoded certificate, CSR or
-CRL):
+To examine the content of the system clipboard (PEM encoded certificate, CSR,
+CRL or <a href="#view-and-verify-a-jwt">JWT</a>):
 
 <ol>
   <li>
@@ -61,6 +61,43 @@ CRL):
     After viewing the details close the dialog by clicking on the <b>OK</b> button.
   </li>
 </ol>
+
+<h1 id="view-and-verify-a-jwt">View and Verify a JWT</h1>
+<hr />
+
+When <a href="#examine-a-file">Examine File</a> or <a href="#examine-clipboard-content">Examine Clipboard</a> content
+is recognized as a JWT (JSON Web Token), the <b>View JWT</b> dialog is displayed instead of the
+Certificate/CSR/CRL Details dialog:
+
+<ol>
+  <li>The <b>Encoded</b>, <b>Header</b> and <b>Payload</b> views show the raw and decoded JWT.</li>
+
+
+  <li>
+    To verify the JWT's signature, paste the corresponding public key, PEM or Base64 DER encoded, into the <b>Public key</b> field and press the <b>Verify</b> button.
+  </li>
+
+
+  <li>
+    A message will confirm whether the signature was verified, invalid, or that the supplied public key was itself
+    invalid.
+  </li>
+
+
+  <li>
+    Optionally press the <b>Copy</b> button to copy the JWT to the clipboard.
+  </li>
+
+
+  <li>
+    After viewing the details close the dialog by clicking on the <b>OK</b> button.
+  </li>
+</ol>
+
+<p>
+    Supported signature algorithms for verification are the RSA ("RS..."/"PS...") and EC ("ES...") families, as well
+    as EdDSA/Ed25519 and Ed448.
+</p>
 
 <h1>Examine an TLS/SSL Connection</h1>
 <hr />

@@ -175,6 +175,74 @@ KeyStore Explorer can be configured to use a variety of user interface look and 
   </li>
 </ol>
 
+<h2 id="file-chooser-configuration">File Chooser Configuration</h2>
+<hr />
+
+<p>
+  To configure the file chooser:
+</p>
+
+<ol>
+  <li>
+    From the <b>Tools</b> menu, choose <b>Preferences</b>. <b>macOS users:</b> From the <b>KeyStore Explorer</b> menu, choose <b>Preferences</b>.
+  </li>
+
+  <li>
+    The <b>Preferences</b> dialog will be displayed. Select the <b>User Interface</b> tab.
+  </li>
+
+  <li>
+    Check <b>Show native file chooser dialog</b> to use the operating system's native file chooser instead of the
+    Java one.
+  </li>
+
+  <li>
+    Check <b>Show hidden files</b> to show hidden files and folders in the file chooser.
+  </li>
+
+  <li>
+    Press the <b>OK</b> button to save your settings and dismiss the <b>Preferences</b> dialog.
+  </li>
+</ol>
+
+<h2 id="keystore-open-and-reload-configuration">KeyStore Open and Reload Configuration</h2>
+<hr />
+
+<p>
+  To configure how KeyStores are opened and reloaded:
+</p>
+
+<ol>
+  <li>
+    From the <b>Tools</b> menu, choose <b>Preferences</b>. <b>macOS users:</b> From the <b>KeyStore Explorer</b> menu, choose <b>Preferences</b>.
+  </li>
+
+  <li>
+    The <b>Preferences</b> dialog will be displayed. Select the <b>User Interface</b> tab.
+  </li>
+
+  <li>
+    Check <b>Automatically reload externally modified key stores</b> to have KeyStore Explorer watch open KeyStore
+    files and offer to reload them whenever they are changed by another application. See
+    <a href="keyStoreManagement.html#reload-a-keystore">Reload a KeyStore</a>.
+  </li>
+
+  <li>
+    If automatic reloading is enabled, additionally check <b>Reload silently</b> to reload changed KeyStores
+    without prompting first. KeyStore Explorer will still prompt before reloading a KeyStore that has unsaved
+    changes, since reloading discards them.
+  </li>
+
+  <li>
+    Check <b>Open key stores in existing instance</b> to have KeyStores opened from outside KeyStore Explorer (for
+    example by double-clicking a KeyStore file) open in an already running instance instead of starting a new one.
+  </li>
+
+  <li>
+    Press the <b>OK</b> button to save your settings and dismiss the <b>Preferences</b> dialog.
+  </li>
+</ol>
+
 <h2 id="internet-proxy-configuration">Internet Proxy Configuration</h2>
 <hr />
 
@@ -340,6 +408,8 @@ data like size or curve (for EC keys) and certificate data like issuer or serial
 
 </ol>
 
+<b>Note:</b> Columns can also be shown and hidden more quickly by right-clicking on the KeyStore Entries table's
+column header and using the same selection there, without having to open the Preferences dialog.
 
 <h2 id="password-generator-and-manager-configuration">Password Generator and Manager Configuration</h2>
 <hr />

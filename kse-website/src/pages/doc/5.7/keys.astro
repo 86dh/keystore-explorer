@@ -27,6 +27,95 @@ in KeyStore Explorer by the following icon: &nbsp;&nbsp;&nbsp;&nbsp;<img src="im
   the <b>Certificate Expiry</b> column of the KeyStore table.
 </p>
 
+<h2 id="generate-a-secret-key">Generate a Secret Key</h2>
+<hr />
+
+To generate a Secret Key:
+
+<ol>
+  <li>
+    From the <b>Tools</b> menu, choose <b>Generate Secret Key</b>. Alternatively
+    click on the <b>Generate Secret Key</b> tool bar button:
+    &nbsp;&nbsp;&nbsp;&nbsp;<img src="images/genseckey.png" />
+  </li>
+
+
+  <li>
+    The <b>Generate Secret Key</b> dialog will be displayed. Select an <b>Algorithm</b> and a <b>Key Size</b> and press the <b>OK</b> button.
+  </li>
+
+
+  <li>The <b>New Secret Key Entry Alias</b> dialog will be displayed.</li>
+
+
+  <li>
+    Enter the alias for the new Secret Key entry and press the <b>OK</b> button.
+  </li>
+
+
+  <li>
+    If required the <b>New Secret Key Entry Password</b> dialog will be displayed.
+    Enter the password with which to protect the new Secret Key entry, confirm it
+    and press the <b>OK</b> button.
+  </li>
+
+
+  <li>The new Key entry will appear in the KeyStore Entries table.</li>
+</ol>
+
+<b>Note:</b> Not every KeyStore type supports every algorithm, and the available key sizes depend on the chosen
+algorithm. See <a href="specifications.html#secret_keys">Specifications</a> for the full list of supported
+algorithms and their key size ranges.
+
+<h2 id="store-a-passphrase">Store a Passphrase</h2>
+<hr />
+
+To store an arbitrary password or passphrase in the active KeyStore, as a Secret Key entry:
+
+<ol>
+  <li>
+    From the <b>Tools</b> menu, choose <b>Store Passphrase</b>. Alternatively
+    click on the <b>Store Passphrase</b> tool bar button:
+    &nbsp;&nbsp;&nbsp;&nbsp;<img src="images/passphrase.png" />
+  </li>
+
+
+  <li>The <b>Store Passphrase</b> dialog will be displayed.</li>
+
+
+  <li>Select an <b>Algorithm</b> (one of the PBE* algorithms).</li>
+
+
+  <li>
+    Press the <b>Set</b> button, enter the passphrase to store and confirm it.
+  </li>
+
+
+  <li>Press the <b>OK</b> button.</li>
+
+
+  <li>The <b>New Secret Key Entry Alias</b> dialog will be displayed.</li>
+
+
+  <li>
+    Enter the alias for the new entry and press the <b>OK</b> button.
+  </li>
+
+
+  <li>
+    If required the <b>New Secret Key Entry Password</b> dialog will be displayed.
+    Enter the password with which to protect the new entry, confirm it
+    and press the <b>OK</b> button.
+  </li>
+
+
+  <li>The new Key entry will appear in the KeyStore Entries table.</li>
+</ol>
+
+<b>Note:</b> This is equivalent to the <code>keytool -importpass</code> command. The stored passphrase is a regular
+Secret Key entry &mdash; it can be viewed, renamed, deleted, or cut/copied and pasted like any other Key entry, as
+described below.
+
 <h2 id="unlock-a-key">Unlock a Key</h2>
 <hr />
 
